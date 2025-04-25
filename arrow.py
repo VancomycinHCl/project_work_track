@@ -8,7 +8,8 @@ from typing import Tuple
 def get_dest(length: int = 100, theta_deg: float=45.0) -> Tuple[int, int]:
     x0: int = 0
     y0: int = 0
-    theta_rad = math.radians(theta_deg)  # 转为弧度
+    # theta_rad = math.radians(theta_deg)  # 转为弧度
+    theta_rad = theta_deg  # 转为弧度
     x1 = int(x0 + length * math.cos(theta_rad))
     y1 = int(y0 - length * math.sin(theta_rad)) # Attention! In openCV lib, the y axis is downward
     return (x1,y1)
