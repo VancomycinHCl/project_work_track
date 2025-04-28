@@ -13,6 +13,10 @@ data_queue = queue.Queue()
 num_frames = 0
 running = True  # Toggle by key press
 
+# Load background image (global)
+background = None
+canvas_size = (500, 500)
+
 @dataclass
 class pos_2d:
     x: float = field(default=0)  # x position 
@@ -61,7 +65,11 @@ def plot_from_queue():
                 cutoff_cnt = 0
                 # print(f"[PLOTTING] Position: {pos}")
                 # Simple visualization example:
-                canvas = np.ones((500, 500, 3), dtype="uint8") * 255
+                # Start with the background image
+                if background is not None:
+                    canvas = background.copy()
+                else:
+                    canvas = np.ones((*canvas_size, 3), dtype="uint8") * 255
                 x, y = int(x0*100 + 250), int(y0*100 + 250)
                 cv2.circle(canvas, (x, y), 10, (255, 0, 0), -1)
                 x1, y1 = get_dest(50,h0)
@@ -95,9 +103,19 @@ plot_thread.start()
 
 # In your main function:
 if __name__ == "__main__":
+    
+    # Load background image
+    background_path = "test.png"  # Change to your image
+    bg = cv2.imread(background_path)
+    if bg is not None:
+        background = cv2.resize(bg, canvas_size)
+        print("Background loaded.")
+    else:
+        print("Background image not found or failed to load.")
+
     # Setup NatNet connection
-    motive_ip = "192.168.43.155"
-    local_ip = "192.168.43.162"
+    motive_ip = "192.168.43.155" #"192.168.43.155"
+    local_ip = "192.168.43.162" #"192.168.43.162"
 
     client = NatNetClient(
         server_ip_address=motive_ip,
