@@ -14,7 +14,7 @@ running = True
 
 # Load background image (global)
 background = None
-canvas_size = (500, 500)
+canvas_size = (1600, 750)
 
 
 @dataclass
@@ -46,7 +46,7 @@ def plot_from_queue():
                     canvas = background.copy()
                 else:
                     canvas = np.ones((*canvas_size, 3), dtype="uint8") * 255
-                x, y = int(x0 * 100 + 250), int(y0 * 100 + 250)
+                x, y = int(x0 * 100 + canvas_size[0]/2), int(y0 * 100 + canvas_size[1]/2)
                 cv2.circle(canvas, (x, y), 10, (255, 0, 0), -1)
                 x1, y1 = get_dest(50, h0)
                 x1 = x1 + x

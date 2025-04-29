@@ -7,6 +7,14 @@ from natnet_client import NatNetClient, DataDescriptions, DataFrame
 from arrow import get_dest
 from dataclasses import dataclass, field
 import math
+import os
+
+image_path = os.environ.get("IMAGE_PATH")
+canvas_width = int(os.environ.get("CANVAS_WIDTH", 0))
+canvas_height = int(os.environ.get("CANVAS_HEIGHT", 0))
+
+print(f"Using image: {image_path}")
+print(f"Canvas size: {canvas_width}x{canvas_height}")
 
 # Shared FIFO queue
 data_queue = queue.Queue()
@@ -61,7 +69,7 @@ def plot_from_queue():
             if cutoff_cnt == (cutoff_rate - 1):
                 x0,y0 = pos.x, pos.y
                 h0 = pos.h # / (math.pi*2) * 360 
-                print(f"h0:{h0}")
+                #print(f"h0:{h0}")
                 cutoff_cnt = 0
                 # print(f"[PLOTTING] Position: {pos}")
                 # Simple visualization example:
@@ -70,7 +78,7 @@ def plot_from_queue():
                     canvas = background.copy()
                 else:
                     canvas = np.ones((*canvas_size, 3), dtype="uint8") * 255
-                x, y = int(x0*100 + 250), int(y0*100 + 250)
+                x, y = int(x0*100 + canvas_size[0]/2), int(y0*100 + canvas_size[1]/2)
                 cv2.circle(canvas, (x, y), 10, (255, 0, 0), -1)
                 x1, y1 = get_dest(50,h0)
                 x1 = x1 + x
@@ -114,8 +122,8 @@ if __name__ == "__main__":
         print("Background image not found or failed to load.")
 
     # Setup NatNet connection
-    motive_ip = "192.168.43.155" #"192.168.43.155"
-    local_ip = "192.168.43.162" #"192.168.43.162"
+    motive_ip = "192.168.205.139" #"192.168.43.155"
+    local_ip = "192.168.205.159" #"192.168.43.162"
 
     client = NatNetClient(
         server_ip_address=motive_ip,
