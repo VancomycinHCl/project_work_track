@@ -77,7 +77,7 @@ def load_data_from_file(filepath):
                     h = qu2h1(w, x_q, y_q, z_q)
                     pos = pos_2d(x, y, h)
                     data_queue.put(pos)
-                    time.sleep(0.01)  # Simulate live feed
+                    time.sleep(0.001)  # Simulate live feed 0.001 =1ms delay Modify this to increase or dercrease the speed of running data.
             except Exception as e:
                 print(f"Error parsing line: {line}\n{e}")
     f.close()
