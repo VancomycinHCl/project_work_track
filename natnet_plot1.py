@@ -9,12 +9,12 @@ from dataclasses import dataclass, field
 import math
 import os
 
-image_path = os.environ.get("IMAGE_PATH")
-canvas_width = int(os.environ.get("CANVAS_WIDTH", 0))
-canvas_height = int(os.environ.get("CANVAS_HEIGHT", 0))
+#image_path = os.environ.get("IMAGE_PATH")
+#canvas_width = int(os.environ.get("CANVAS_WIDTH", 0))
+#canvas_height = int(os.environ.get("CANVAS_HEIGHT", 0))
 
-print(f"Using image: {image_path}")
-print(f"Canvas size: {canvas_width}x{canvas_height}")
+#print(f"Using image: {image_path}")
+#print(f"Canvas size: {canvas_width}x{canvas_height}")
 
 # Shared FIFO queue
 data_queue = queue.Queue()
@@ -23,7 +23,7 @@ running = True  # Toggle by key press
 
 # Load background image (global)
 background = None
-canvas_size = (500, 500)
+canvas_size = (int(840), int(672))
 
 @dataclass
 class pos_2d:
@@ -42,6 +42,9 @@ def qu2h1(w,x,y,z):
     cr_cp = 1-2*(y*y+x*x)
     return math.atan2(sr_cp, cr_cp) # quaternion to yaw as radian 
 
+def offset_compensation(x,y):
+    return(x-0.31383833289146423, y-0.3342752158641815)
+
 
 # Called when new mocap frame is received
 def receive_new_frame(data_frame):
@@ -53,10 +56,15 @@ def receive_new_frame(data_frame):
         x = rb.pos[0]
         y = rb.pos[1]
         # h = rb.rot[2]
+        x,y = offset_compensation(x,y)
         h = qu2h1(rb.rot[0],rb.rot[1],rb.rot[2],rb.rot[3])
         pos = pos_2d(x,y,h)
         data_queue.put(pos)  # Enqueue new data
-        # print(f"[DATA RECEIVED] Frame #{num_frames} - Position: {rb.pos}")
+        print(f"[DATA RECEIVED] Frame #{num_frames} - Position: {rb.pos}")
+
+
+
+
 
 # Visualization thread
 def plot_from_queue():
@@ -78,7 +86,7 @@ def plot_from_queue():
                     canvas = background.copy()
                 else:
                     canvas = np.ones((*canvas_size, 3), dtype="uint8") * 255
-                x, y = int(x0*100 + canvas_size[0]/2), int(y0*100 + canvas_size[1]/2)
+                x, y = int(x0*1.51515*100 + canvas_size[0]/2), int(y0*1.5151515*100 + canvas_size[1]/2)
                 cv2.circle(canvas, (x, y), 10, (255, 0, 0), -1)
                 x1, y1 = get_dest(50,h0)
                 x1 = x1 + x
@@ -113,7 +121,7 @@ plot_thread.start()
 if __name__ == "__main__":
     
     # Load background image
-    background_path = "test.png"  # Change to your image
+    background_path = "canvas.png"  # Change to your image  /home/username/images_folder/myimage.png
     bg = cv2.imread(background_path)
     if bg is not None:
         background = cv2.resize(bg, canvas_size)
@@ -122,8 +130,8 @@ if __name__ == "__main__":
         print("Background image not found or failed to load.")
 
     # Setup NatNet connection
-    motive_ip = "192.168.205.139" #"192.168.43.155"
-    local_ip = "192.168.205.159" #"192.168.43.162"
+    motive_ip = "130.233.123.100"#"192.168.10.139"#"130.233.123.100"
+    local_ip = "130.233.123.110"#"192.168.10.159"  #"130.233.123.109"#"130.233.123.101"
 
     client = NatNetClient(
         server_ip_address=motive_ip,

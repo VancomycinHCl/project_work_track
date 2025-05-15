@@ -14,7 +14,7 @@ running = True
 
 # Load background image (global)
 background = None
-canvas_size = (1600, 750)
+canvas_size = (int(840), int(672))
 
 
 @dataclass
@@ -27,6 +27,10 @@ def qu2h1(w, x, y, z):
     sr_cp = 2 * (w * x + z * y)
     cr_cp = 1 - 2 * (y * y + x * x)
     return math.atan2(sr_cp, cr_cp)
+
+def offset_compensation(x,y):
+    return(x-0.31383833289146423, y-0.3342752158641815)
+
 
 # Visualization thread
 def plot_from_queue():
@@ -46,7 +50,8 @@ def plot_from_queue():
                     canvas = background.copy()
                 else:
                     canvas = np.ones((*canvas_size, 3), dtype="uint8") * 255
-                x, y = int(x0 * 100 + canvas_size[0]/2), int(y0 * 100 + canvas_size[1]/2)
+                #x, y = int(x0 * 100 + canvas_size[0]/2), int(y0 * 100 + canvas_size[1]/2)
+                x, y = int(x0*1.51515*100 + canvas_size[0]/2), int(y0*1.5151515*100 + canvas_size[1]/2)
                 cv2.circle(canvas, (x, y), 10, (255, 0, 0), -1)
                 x1, y1 = get_dest(50, h0)
                 x1 = x1 + x
@@ -73,11 +78,12 @@ def load_data_from_file(filepath):
                 if pos_3d and rot:
                     x = float(pos_3d[0])
                     y = float(pos_3d[1])
+                    x,y = offset_compensation(x,y)
                     w, x_q, y_q, z_q = map(float, rot)
                     h = qu2h1(w, x_q, y_q, z_q)
                     pos = pos_2d(x, y, h)
                     data_queue.put(pos)
-                    time.sleep(0.001)  # Simulate live feed 0.001 =1ms delay Modify this to increase or dercrease the speed of running data.
+                    time.sleep(0.005)  # Simulate live feed 0.001 =1ms delay Modify this to increase or dercrease the speed of running data.
             except Exception as e:
                 print(f"Error parsing line: {line}\n{e}")
     f.close()
@@ -85,7 +91,7 @@ def load_data_from_file(filepath):
 if __name__ == "__main__":
     
     # Load background image
-    background_path = "test.png"  # Change to your image
+    background_path = "canvas.png"  # Change to your image
     bg = cv2.imread(background_path)
     if bg is not None:
         background = cv2.resize(bg, canvas_size)
@@ -96,7 +102,7 @@ if __name__ == "__main__":
     plot_thread = threading.Thread(target=plot_from_queue)
     plot_thread.start()
 
-    file_path = "sample_data.txt"  # Replace with your file
+    file_path = "calibration_y_longer_side.txt"  # Replace with your file
     load_data_from_file(file_path)
 
     plot_thread.join()

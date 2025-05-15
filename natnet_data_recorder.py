@@ -8,11 +8,11 @@ rigid_body_names: Dict[int, str] = {}
 num_frames = 0
 
 # Open a file to store all the output
-output_file = open("output.txt", "w")
+output_file = open("calibration_y_longer_side.txt", "w")
 
 def receive_new_desc(desc: DataDescriptions):
     global output_file
-    print("✅ Received data descriptions.", file=output_file)
+    print("Received data descriptions.", file=output_file)
     for rb_desc in desc.rigid_bodies:
         rigid_body_names[rb_desc.id_num] = rb_desc.name or f"RigidBody_{rb_desc.id_num}"
         print(f"  ID: {rb_desc.id_num}, Name: {rigid_body_names[rb_desc.id_num]}", file=output_file)
@@ -31,8 +31,8 @@ def receive_new_frame(data_frame: DataFrame):
 
 
 if __name__ == "__main__":
-    motive_ip = "192.168.205.139"  # Motive IP (NatNet server) 192.168.43.155  192.168.205.139
-    local_ip = "192.168.205.159"  # IP (NatNet client)192.168.43.137
+    motive_ip = "130.233.123.100"#"192.168.10.139"  # Motive IP (NatNet server) 192.168.43.155  192.168.205.139
+    local_ip = "130.233.123.110"#"192.168.10.159"  # IP (NatNet client)192.168.43.137
 
     client = NatNetClient(
         server_ip_address=motive_ip,
