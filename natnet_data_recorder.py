@@ -7,8 +7,11 @@ from natnet_client import NatNetClient, DataDescriptions, DataFrame
 rigid_body_names: Dict[int, str] = {}
 num_frames = 0
 
+motive_ip = "130.233.123.100" # Motive IP (NatNet server)
+local_ip = "130.233.123.110"  # IP (NatNet client)
+
 # Open a file to store all the output
-output_file = open("calibration_y_longer_side.txt", "w")
+output_file = open("output.txt", "w")
 
 def receive_new_desc(desc: DataDescriptions):
     global output_file
@@ -31,8 +34,6 @@ def receive_new_frame(data_frame: DataFrame):
 
 
 if __name__ == "__main__":
-    motive_ip = "130.233.123.100"#"192.168.10.139"  # Motive IP (NatNet server) 192.168.43.155  192.168.205.139
-    local_ip = "130.233.123.110"#"192.168.10.159"  # IP (NatNet client)192.168.43.137
 
     client = NatNetClient(
         server_ip_address=motive_ip,

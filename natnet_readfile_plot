@@ -15,6 +15,8 @@ running = True
 # Load background image (global)
 background = None
 canvas_size = (int(840), int(672))
+file_path = "sample_data.txt"  # Replace with your file
+background_path = "canvas.png"  # Change to your image here
 
 
 @dataclass
@@ -91,7 +93,6 @@ def load_data_from_file(filepath):
 if __name__ == "__main__":
     
     # Load background image
-    background_path = "canvas.png"  # Change to your image
     bg = cv2.imread(background_path)
     if bg is not None:
         background = cv2.resize(bg, canvas_size)
@@ -102,7 +103,6 @@ if __name__ == "__main__":
     plot_thread = threading.Thread(target=plot_from_queue)
     plot_thread.start()
 
-    file_path = "calibration_y_longer_side.txt"  # Replace with your file
     load_data_from_file(file_path)
 
     plot_thread.join()

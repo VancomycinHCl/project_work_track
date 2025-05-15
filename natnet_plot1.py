@@ -24,6 +24,11 @@ running = True  # Toggle by key press
 # Load background image (global)
 background = None
 canvas_size = (int(840), int(672))
+background_path = "canvas.png"  # Change to your image  /home/username/images_folder/myimage.png
+
+# Setup NatNet connection
+motive_ip = "130.233.123.100"
+local_ip = "130.233.123.110"
 
 @dataclass
 class pos_2d:
@@ -61,10 +66,6 @@ def receive_new_frame(data_frame):
         pos = pos_2d(x,y,h)
         data_queue.put(pos)  # Enqueue new data
         print(f"[DATA RECEIVED] Frame #{num_frames} - Position: {rb.pos}")
-
-
-
-
 
 # Visualization thread
 def plot_from_queue():
@@ -121,17 +122,12 @@ plot_thread.start()
 if __name__ == "__main__":
     
     # Load background image
-    background_path = "canvas.png"  # Change to your image  /home/username/images_folder/myimage.png
     bg = cv2.imread(background_path)
     if bg is not None:
         background = cv2.resize(bg, canvas_size)
         print("Background loaded.")
     else:
         print("Background image not found or failed to load.")
-
-    # Setup NatNet connection
-    motive_ip = "130.233.123.100"#"192.168.10.139"#"130.233.123.100"
-    local_ip = "130.233.123.110"#"192.168.10.159"  #"130.233.123.109"#"130.233.123.101"
 
     client = NatNetClient(
         server_ip_address=motive_ip,
