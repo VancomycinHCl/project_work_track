@@ -24,11 +24,11 @@ running = True  # Toggle by key press
 # Load background image (global)
 background = None
 canvas_size = (int(840), int(672))
-background_path = "canvas.png"  # Change to your image  /home/username/images_folder/myimage.png
+background_path = 'images/1_pedestrian_densities_mirror.jpg'  # Change to your image  /home/username/pwd/images_folder/myimage.png
 
 # Setup NatNet connection
-motive_ip = "130.233.123.100"
-local_ip = "130.233.123.110"
+motive_ip = "130.233.123.109"
+local_ip = "130.233.123.101"
 
 @dataclass
 class pos_2d:
