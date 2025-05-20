@@ -24,7 +24,8 @@ running = True  # Toggle by key press
 # Load background image (global)
 background = None
 canvas_size = (int(840), int(672))
-background_path = 'images/1_pedestrian_densities_mirror.jpg'  # Change to your image  /home/username/pwd/images_folder/myimage.png
+background_path = "images/1_pedestrian_densities.jpg"  # Change to your image  /home/username/pwd/images_folder/myimage.png
+#remember that path is relative to where the code is run.
 
 # Setup NatNet connection
 motive_ip = "130.233.123.109"
@@ -87,7 +88,7 @@ def plot_from_queue():
                     canvas = background.copy()
                 else:
                     canvas = np.ones((*canvas_size, 3), dtype="uint8") * 255
-                x, y = int(x0*1.51515*100 + canvas_size[0]/2), int(y0*1.5151515*100 + canvas_size[1]/2)
+                x, y = int(x0*1.51515*100 + canvas_size[0]/2), int((-y0)*1.5151515*100 + canvas_size[1]/2)
                 cv2.circle(canvas, (x, y), 10, (255, 0, 0), -1)
                 x1, y1 = get_dest(50,h0)
                 x1 = x1 + x
